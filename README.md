@@ -1,0 +1,1 @@
+Startingpoint for node projects

@@ -1,0 +1,14 @@
+{
+  "name": "Projectname",
+  "private": true,
+  "version": "0.0.1",
+  "dependencies": {
+    "backbone.babysitter": "~0.0.6",
+    "backbone.wreqr": "~0.2.0",
+    "backbone.marionette": "~1.2.2",
+    "jquery": "~1.10.2"
+  },
+  "devDependencies": {
+    "lodash": "~2.4.1"
+  }
+}

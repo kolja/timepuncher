@@ -6,7 +6,6 @@
 var express = require('express'),
     routes = require('./routes'),
     user = require('./routes/user'),
-    connectAssets = require('connect-assets'),
     http = require('http'),
     path = require('path');
 
@@ -20,8 +19,8 @@ app.use(express.favicon());
 app.use(express.logger('dev'));
 app.use(express.bodyParser());
 app.use(express.methodOverride());
+app.use(express.static(__dirname + '/public'));
 app.use(app.router);
-app.use(connectAssets());
 
 // development only
 if ('development' == app.get('env')) {

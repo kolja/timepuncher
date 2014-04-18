@@ -21,33 +21,14 @@ module.exports = (grunt) ->
                         underscore:
                             path: 'bower_components/lodash/dist/lodash.js',
                             exports: '_'
-                        backbone:
-                            path: 'bower_components/backbone/backbone.js',
-                            exports: 'Backbone',
-                            depends:
-                                underscore: 'underscore'
-                        'backbone.babysitter':
-                            path: 'bower_components/backbone.babysitter/lib/backbone.babysitter.js',
-                            exports: 'Backbone.Babysitter',
-                            depends:
-                                backbone: 'Backbone'
-                        'backbone.wreqr':
-                            path: 'bower_components/backbone.wreqr/lib/backbone.wreqr.js',
-                            exports: 'Backbone.Wreqr',
-                            depends:
-                                backbone: 'Backbone'
-                        'backbone.marionette':
-                            path: 'bower_components/backbone.marionette/lib/backbone.marionette.js',
-                            exports: 'Marionette',
-                            depends:
-                                jquery: '$',
-                                backbone: 'Backbone',
-                                underscore: '_'
+                        angular:
+                            path: 'bower_components/angular/angular.js',
+                            exports: 'angular'
             app:
-                src: ['assets/js/app.coffee'],
+                src: ['assets/js/app.*'],
                 dest: 'public/js/app.js',
                 options:
-                    external: ['jquery','underscore','backbone','backbone.babysitter','backbone.wreqr','backbone.marionette'],
+                    external: ['jquery','underscore','angular']
                     transform: ['coffeeify']
         concat:
             options:

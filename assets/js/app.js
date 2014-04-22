@@ -1,10 +1,22 @@
 
-$ = require('jquery');
-_ = require('underscore');
-angular = require('angular');
+var timepuncher = angular.module('timepuncher', ['ngRoute'])
 
-angular.module('timepuncher', [])
-    .controller('punch', ['$scope', function ($scope) {
-        console.log('hi there 2');
-        $scope.greetMe = 'World';
-    }]);
+    .controller('TimepuncherController', function($scope,$routeParams) {
+        $scope.params = $routeParams;
+        $scope.data = {message: "Hello"};
+        console.log($scope);
+        console.log($routeParams);
+    })
+
+    .config( function ($routeProvider) {
+        console.log("config");
+        $routeProvider
+            .when( '/', {
+                controller: 'TimepuncherController',
+                templateUrl: 'partials/card.html'
+            })
+            .otherwise( function ($scope) {
+                console.log("blork");
+            });
+    });
+

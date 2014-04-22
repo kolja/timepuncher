@@ -11,24 +11,17 @@ module.exports = (grunt) ->
 
         browserify:
             vendor:
-                src: [],
-                dest: 'public/js/vendor.js',
-                options:
-                    shim:
-                        jquery:
-                            path: 'bower_components/jquery/jquery.js',
-                            exports: '$'
-                        underscore:
-                            path: 'bower_components/lodash/dist/lodash.js',
-                            exports: '_'
-                        angular:
-                            path: 'bower_components/angular/angular.js',
-                            exports: 'angular'
+                src: ['bower_components/jquery/jquery.js',
+                      'bower_components/lodash/dist/lodash.js',
+                      'bower_components/angular/angular.js',
+                      'bower_components/angular-route/angular-route.js'
+                ],
+                dest: 'public/js/vendor.js'
             app:
-                src: ['assets/js/app.*'],
+                src: ['assets/js/*'],
                 dest: 'public/js/app.js',
                 options:
-                    external: ['jquery','underscore','angular']
+                    external: ['jquery','lodash','angular']
                     transform: ['coffeeify']
         concat:
             options:
@@ -37,7 +30,7 @@ module.exports = (grunt) ->
 
         watch:
             scripts:
-                files: ['assets/js/*.coffee'],
+                files: ['assets/js/*.js'],
                 tasks: ['browserify:app','concat'],
                 options:
                     livereload: true

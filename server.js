@@ -4,6 +4,7 @@
  */
 
 var express = require('express'),
+    cors = require('express-cors'),
     routes = require('./routes'),
     http = require('http'),
     path = require('path');
@@ -16,6 +17,9 @@ app.set('views', __dirname + '/views');
 app.use(express.favicon());
 app.use(express.logger('dev'));
 app.use(express.bodyParser());
+app.use(cors({
+    allowedOrigins: ['localhost:3000', '127.0.0.1:5984']
+}));
 app.use(express.methodOverride());
 app.use(express.static(__dirname + '/public'));
 app.use(express.static(__dirname + '/views'));

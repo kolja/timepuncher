@@ -16,7 +16,7 @@ tp.factory('cardLocal', function () {
 
 tp.factory( "cardCouch", function ($resource) {
     return $resource(
-        'http://127.0.0.1:5984/timepuncher/a444c37b2521fc0f59fdf65b4b000e52', {}, {
+        'http://127.0.0.1:5984/timepuncher/_design/cards/_view/all', {}, {
             update: {
                 method: 'PUT'
             },
@@ -24,18 +24,17 @@ tp.factory( "cardCouch", function ($resource) {
                 method: 'GET',
                 params: {
                     active_only: true
-                },
-                isArray: true
+                }
             }
         }
     );
 });
 
-tp.controller('TimepuncherController', function($scope,$routeParams,$http) {
+tp.controller('TimepuncherController', function($scope,$routeParams,cardCouch) {
     $scope.params = $routeParams;
-    $http.get('http://127.0.0.1:5984/timepuncher/a444c37b2521fc0f59fdf65b4b000e52').success(function(data) {
-        $scope.data = data;
-        console.log(data);
+
+    cardCouch.cards().$promise.then(function(data) {
+        $scope.data = data.rows[0].value;
     });
 });
 

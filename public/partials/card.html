@@ -1,1 +1,6 @@
-<div>Hello card Template {{ data }}</div>
+<li class="card {{ card.status }}">
+    <dl>
+        <dt>desc:</dt><dd>{{ card.description }}</dd>
+        <dt>time:</dt><dd>{{ card.accumulatedTime | timeFormatter }}</dd>
+    </dl>
+</li>

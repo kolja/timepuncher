@@ -29,10 +29,14 @@ module.exports = (grunt) ->
                 separator: ';'
             'public/js/site.js': ['public/js/vendor.js','public/js/app.js']
 
+        stylus:
+            compile:
+                files: 'public/css/app.css': 'assets/css/app.styl'
+
         watch:
             scripts:
-                files: ['assets/js/*.js'],
-                tasks: ['browserify:app','concat'],
+                files: ['assets/js/*.js', 'assets/css/*.styl'],
+                tasks: ['stylus', 'browserify:app','concat'],
                 options:
                     livereload: true
 
@@ -44,11 +48,12 @@ module.exports = (grunt) ->
 
     tasks = ['grunt-browserify',
             'grunt-contrib-concat',
+            'grunt-contrib-stylus',
             'grunt-nodemon',
             'grunt-contrib-watch',
             'grunt-concurrent']
 
     grunt.loadNpmTasks task for task in tasks
 
-    grunt.task.registerTask 'default', ['browserify','concat']
+    grunt.task.registerTask 'default', ['stylus','browserify','concat']
     grunt.task.registerTask 'start', ['concurrent:target']

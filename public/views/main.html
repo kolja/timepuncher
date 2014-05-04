@@ -1,6 +1,10 @@
 
+<script type="text/ng-template" id="cardTemplate" charset="utf-8">
+    <ul></ul>
+</script>
+
 <div>
-    one plus two is {{ 1 + 2 }}
-    <br>
-    data: {{ data }}
+    <cards>
+        <card ng-repeat="card in cards"></card>
+    </cards>
 </div>

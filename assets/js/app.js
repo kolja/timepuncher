@@ -2,14 +2,14 @@
 var tp = angular.module('timepuncher', ['ngRoute','ngResource'])
 
 tp.factory('cardLocal', function () {
-    var STORAGE_ID = 'timepuncher';
+    var storageId = 'timepuncher';
 
     return {
         get: function () {
             return JSON.parse(localStorage.getItem(STORAGE_ID) || '[]');
         },
         put: function (cards) {
-            localStorage.setItem(STORAGE_ID, JSON.stringify(cards));
+            localStorage.setItem(storageId, JSON.stringify(cards));
         }
     };
 });
@@ -30,11 +30,43 @@ tp.factory( "cardCouch", function ($resource) {
     );
 });
 
+tp.directive('card', function() {
+    return {
+        replace: true,
+        restrict: 'E',
+        templateUrl: 'partials/card.html',
+        link: function (scope,element,attributes) {
+            scope.card = scope.card.value;
+        }
+    };
+});
+tp.directive('cards', function($templateCache) {
+    return {
+        transclude: 'false',
+        restrict: 'E',
+        link: function(scope, element, attrs, ctrl, transclude) {
+            var template = $templateCache.get('cardTemplate');
+            var templateElement = angular.element(template);
+            transclude(scope, function(clone) {
+                element.after(templateElement.append(clone));
+            });
+        }
+    };
+});
+
+tp.filter('timeFormatter', function() {
+    return function(time) {
+        timeString = time[0] + "h : " + time[1] + "min " + time[2] + "sec"
+        return timeString;
+    };
+});
+
 tp.controller('TimepuncherController', function($scope,$routeParams,cardCouch) {
+
     $scope.params = $routeParams;
 
     cardCouch.cards().$promise.then(function(data) {
-        $scope.data = data.rows[0].value;
+        $scope.cards = data.rows;
     });
 });
 

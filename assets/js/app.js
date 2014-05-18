@@ -1,19 +1,6 @@
 
 var tp = angular.module('timepuncher', ['ngRoute','ngResource'])
 
-tp.factory('cardLocal', function () {
-    var storageId = 'timepuncher';
-
-    return {
-        get: function () {
-            return JSON.parse(localStorage.getItem(STORAGE_ID) || '[]');
-        },
-        put: function (cards) {
-            localStorage.setItem(storageId, JSON.stringify(cards));
-        }
-    };
-});
-
 tp.factory( "cardCouch", function ($resource) {
     return $resource(
         'http://127.0.0.1:5984/timepuncher/_design/cards/_view/all', {}, {
@@ -74,7 +61,11 @@ tp.config( function ($routeProvider) {
     $routeProvider
         .when( '/', {
             controller: 'TimepuncherController',
-            templateUrl: 'views/main.html'
+            templateUrl: 'views/cards.html'
+        })
+        .when( '/signup', {
+            controller: 'TimepuncherController',
+            templateUrl: 'views/signup.html'
         })
         .otherwise( function ($scope) {
             console.log("blork");

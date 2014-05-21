@@ -34,7 +34,7 @@ if ('development' == app.get('env')) {
 // routes
 app.post('/api/signup', routes.signup);
 app.post('/api/login', routes.login);
-app.get('/api/logout', routes.logout);
+app.post('/api/logout', routes.logout);
 app.get('/secret', routes.secret);
 app.get('/', routes.index);
 

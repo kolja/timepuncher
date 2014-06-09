@@ -3,12 +3,11 @@
  * GET home page.
  */
 
-var authorized = function (req, res) {
-    if (!req.cookies['AuthSession']) {
+var authorized = function (req, res, next) {
+    if (!req.session) {
         res.send(401);
-        return false;
     } else {
-        return true;
+        next();
     }
 }
 

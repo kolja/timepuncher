@@ -4,39 +4,43 @@
  */
 
 var express = require('express'),
+    bodyParser = require('body-parser'),
+    serveStatic = require('serve-static'),
+    favicon = require('serve-favicon'),
     cors = require('express-cors'),
     http = require('http'),
     path = require('path'),
-
+    session = require('express-session'),
+    Redis = require('connect-redis')(session),
     routes = require('./routes'),
-    app = express();
 
-// all environments
+    app = express(),
+    router = express.Router();
+
+
 app.set('port', process.env.PORT || 3000 );
-app.set('views', __dirname + '/views');
-app.use(express.favicon());
-app.use(express.logger('dev'));
-app.use(express.bodyParser());
-app.use(express.cookieParser('nobody-knows-this-secret-string'));
+app.set('view engine', 'html');
+app.engine('html', require('hbs').__express);
+app.set('views', __dirname + '/public/views');
 app.use(cors({
     allowedOrigins: ['localhost:3000', '127.0.0.1:5984']
 }));
-app.use(express.methodOverride());
-app.use(express.static(__dirname + '/public'));
-app.use(express.static(__dirname + '/views'));
-app.use(app.router);
-
-// development only
-if ('development' == app.get('env')) {
-  app.use(express.errorHandler());
-}
+// app.use(favicon());
+app.use(bodyParser());
+app.use(session({
+    store: new Redis({
+        url: "redis://@127.0.0.1:6379/db0"
+    }),
+    secret: 'redis-secret'
+}));
 
 // routes
-app.post('/api/signup', routes.signup);
-app.post('/api/login', routes.login);
-app.post('/api/logout', routes.logout);
-app.get('/secret', routes.secret);
-app.get('/', routes.index);
+router.use('/api/signup', routes.signup);
+router.use('/api/login', routes.login);
+router.use('/api/logout', routes.logout);
+router.use('/secret', routes.secret);
+router.use('/', routes.home);
+app.use(router);
 
 http.createServer(app).listen(app.get('port'), function(){
     console.log('Express server listening on port ' + app.get('port'));

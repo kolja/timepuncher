@@ -5,6 +5,7 @@
 
 var express = require('express'),
     bodyParser = require('body-parser'),
+    cookieParser = require('cookie-parser'),
     serveStatic = require('serve-static'),
     favicon = require('serve-favicon'),
     cors = require('express-cors'),
@@ -27,6 +28,7 @@ app.use(cors({
 }));
 // app.use(favicon());
 app.use(bodyParser());
+app.use(cookieParser());
 app.use(session({
     store: new Redis({
         url: "redis://@127.0.0.1:6379/db0"
@@ -36,7 +38,7 @@ app.use(session({
 
 // routes
 router.use('/api/signup', routes.signup);
-router.use('/api/login', routes.login);
+router.use('/api/login', routes.login );
 router.use('/api/logout', routes.logout);
 router.use('/secret', routes.secret);
 router.use('/', routes.home);

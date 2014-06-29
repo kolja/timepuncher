@@ -1,20 +1,12 @@
 
-/**
- * Module dependencies.
- */
-
 var express = require('express'),
     bodyParser = require('body-parser'),
-    cookieParser = require('cookie-parser'),
     serveStatic = require('serve-static'),
     favicon = require('serve-favicon'),
     cors = require('express-cors'),
     http = require('http'),
     path = require('path'),
-    session = require('express-session'),
-    Redis = require('connect-redis')(session),
     routes = require('./routes'),
-
     app = express(),
     router = express.Router();
 
@@ -28,13 +20,6 @@ app.use(cors({
 }));
 // app.use(favicon());
 app.use(bodyParser());
-app.use(cookieParser());
-app.use(session({
-    store: new Redis({
-        url: "redis://@127.0.0.1:6379/db0"
-    }),
-    secret: 'redis-secret'
-}));
 
 // routes
 router.use('/api/signup', routes.signup);

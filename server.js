@@ -1,34 +1,107 @@
+var koa = require('koa');
+var app = koa();
+var session = require('koa-generic-session');
+var bodyParser = require('koa-bodyparser');
+var passport = require('koa-passport');
+var Router = require('koa-router');
+var views = require('koa-render');
 
-var express = require('express'),
-    bodyParser = require('body-parser'),
-    serveStatic = require('serve-static'),
-    favicon = require('serve-favicon'),
-    cors = require('express-cors'),
-    http = require('http'),
-    path = require('path'),
-    routes = require('./routes'),
-    app = express(),
-    router = express.Router();
+// sessions
+app.keys = ['your-session-secret'];
+app.use(session());
 
+// body parser
+app.use(bodyParser())
 
-app.set('port', process.env.PORT || 3000 );
-app.set('view engine', 'html');
-app.engine('html', require('hbs').__express);
-app.set('views', __dirname + '/public/views');
-app.use(cors({
-    allowedOrigins: ['localhost:3000', '127.0.0.1:5984']
-}));
-// app.use(favicon());
-app.use(bodyParser());
+// authentication
+require('./auth')
+app.use(passport.initialize())
+app.use(passport.session())
 
-// routes
-router.use('/api/signup', routes.signup);
-router.use('/api/login', routes.login );
-router.use('/api/logout', routes.logout);
-router.use('/secret', routes.secret);
-router.use('/', routes.home);
-app.use(router);
+// append view renderer
+app.use(views('./views', {
+  map: { html: 'handlebars' },
+  cache: false
+}))
 
-http.createServer(app).listen(app.get('port'), function(){
-    console.log('Express server listening on port ' + app.get('port'));
-});
+// public routes
+
+var public = new Router()
+
+public.get('/', function*() {
+  this.body = yield this.render('login')
+})
+
+public.post('/custom', function*(next) {
+  var ctx = this
+  yield* passport.authenticate('local', function*(err, user, info) {
+    if (err) throw err
+    if (user === false) {
+      ctx.status = 401
+      ctx.body = { success: false }
+    } else {
+      yield ctx.login(user)
+      ctx.body = { success: true }
+    }
+  }).call(this, next)
+})
+
+// POST /login
+public.post('/login',
+  passport.authenticate('local', {
+    successRedirect: '/app',
+    failureRedirect: '/'
+  })
+)
+
+public.get('/logout', function*(next) {
+  this.logout()
+  this.redirect('/')
+})
+
+public.get('/auth/twitter',
+  passport.authenticate('twitter')
+)
+
+public.get('/auth/twitter/callback',
+  passport.authenticate('twitter', {
+    successRedirect: '/app',
+    failureRedirect: '/'
+  })
+)
+
+public.get('/auth/google',
+  passport.authenticate('google')
+)
+
+public.get('/auth/google/callback',
+  passport.authenticate('google', {
+    successRedirect: '/app',
+    failureRedirect: '/'
+  })
+)
+
+app.use(public.middleware())
+
+// Require authentication for now
+app.use(function*(next) {
+  if (this.isAuthenticated()) {
+    yield next
+  } else {
+    this.redirect('/')
+  }
+})
+
+var secured = new Router()
+
+secured.get('/app', function*() {
+  this.body = yield this.render('app')
+})
+
+app.use(secured.middleware());
+
+// start server
+var port = process.env.PORT || 3000;
+app.listen(port);
+console.log("listening on port "+port);
+

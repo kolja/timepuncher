@@ -6,6 +6,8 @@ var passport = require('koa-passport');
 var Router = require('koa-router');
 var views = require('koa-render');
 
+var secretRoutes = require('./routes/secret.js');
+
 // sessions
 app.keys = ['your-session-secret'];
 app.use(session());
@@ -83,6 +85,8 @@ public.get('/auth/google/callback',
 
 app.use(public.middleware())
 
+secretRoutes(app);
+
 // Require authentication for now
 app.use(function*(next) {
   if (this.isAuthenticated()) {
@@ -91,14 +95,6 @@ app.use(function*(next) {
     this.redirect('/')
   }
 })
-
-var secured = new Router()
-
-secured.get('/app', function*() {
-  this.body = yield this.render('app')
-})
-
-app.use(secured.middleware());
 
 // start server
 var port = process.env.PORT || 3000;

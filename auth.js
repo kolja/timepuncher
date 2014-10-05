@@ -30,6 +30,7 @@ passport.use(new TwitterStrategy({
   },
   function(token, tokenSecret, profile, done) {
     // retrieve user ...
+    console.log(profile);
     done(null, user)
   }
 ))

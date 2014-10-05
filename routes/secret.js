@@ -3,31 +3,15 @@
  * GET home page.
  */
 
-var auth = "some stored cookie";
-var nano = require('nano');
-var cookie = require('cookie');
-var redis = require("redis").createClient();
+var Router = require('koa-router');
 
-var authorized = function (req, res, next) {
-    if (typeof req.headers.cookie !== 'string') {
-        res.send(401);
-    } else {
-        var sessionCookie = cookie.parse(req.headers.cookie);
-    }
-    nano({
-        url : 'http://localhost:5984',
-        cookie: sessionCookie
-    }).session(function(err,session) {
-        if (!session.ok) {
-            res.send(401);
-        } else {
-            next();
-        }
-    });
+var index = function*() {
+    this.body = yield this.render('app')
 }
 
-module.exports = function(req, res){
-    authorized(req,res, function() {
-        res.send('You can only see this, because you are logged in');
-    });
+module.exports = function(app) {
+    var secured = new Router()
+    secured.get( '/app', index )
+    app.use(secured.middleware());
 };
+

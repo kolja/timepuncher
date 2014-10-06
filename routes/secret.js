@@ -4,14 +4,12 @@
  */
 
 var Router = require('koa-router');
+var secured = new Router();
 
 var index = function*() {
     this.body = yield this.render('app')
 }
 
-module.exports = function(app) {
-    var secured = new Router()
-    secured.get( '/app', index )
-    app.use(secured.middleware());
-};
+module.exports = secured.get( '/app', index )
+
 

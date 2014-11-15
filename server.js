@@ -1,13 +1,14 @@
 var koa = require('koa');
 var app = koa();
 
+var conf = require('./conf')
 var session = require('koa-generic-session');
 var bodyParser = require('koa-bodyparser');
 var passport = require('koa-passport')
 var views = require('koa-render');
 
 // sessions
-app.keys = ['your-session-secret'];
+app.keys = conf.sessionSecret
 app.use(session());
 app.use(bodyParser())
 

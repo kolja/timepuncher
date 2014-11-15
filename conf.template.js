@@ -4,5 +4,6 @@ module.exports = {
         consumerKey: 'foo',
         consumerSecret: 'bar'
     }
+    sessionSecret: ['your-session-secret']
 }
 

@@ -4,7 +4,6 @@ var app = koa();
 var conf = require('./conf')
 var session = require('koa-generic-session');
 var bodyParser = require('koa-bodyparser');
-var passport = require('koa-passport')
 var views = require('koa-render');
 
 // sessions
@@ -19,9 +18,7 @@ app.use(views('./views', {
 }))
 
 // authentication
-// what's going on here? Sideeffect? is passport a singleton?
-// https://github.com/rkusa/koa-passport-example
-require('./auth')
+var passport = require('./auth')
 app.use(passport.initialize())
 app.use(passport.session())
 
